@@ -1,6 +1,6 @@
 def input_students
   puts "Please enter the names of the students"
-  puts "To finish, jus hit return twice"
+  puts "To finish, just hit return twice"
   # create an empty array
   students = []
   # get the first name
@@ -23,8 +23,8 @@ def print_header
 end
 
 def print(students)
-  students.each do |student|
-    puts "#{student[:name]} (#{student[:cohort]} cohort)"
+  students.each_with_index do |student, index|
+    puts "#{index+1} #{student[:name]} (#{student[:cohort]} cohort)"
   end
 end
 
