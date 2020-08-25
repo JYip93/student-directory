@@ -1,3 +1,4 @@
+
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
@@ -71,8 +72,23 @@ def print_footer(students)
   puts "Overall, we have #{students.count} great students".center(50)
 end
 
+#Exercise 8.8
+def print_cohort_group(students)
+  puts "Enter cohort"
+  students_group = []
+  cohort_group = gets.chomp.to_sym
+  students.map do |student|
+    if student[:cohort] == cohort_group
+      students_group << student
+    end
+  end
+puts students_group
+end
+
+
 #nothing happens until we call the methods
 students = input_students
 print_header
 print(students)
+print_cohort_group(students)
 print_footer(students)
