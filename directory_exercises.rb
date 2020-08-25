@@ -45,10 +45,14 @@ end
 
 #Exercise 8.1, 8.4
 def print(students)
+  if students.empty?
+    puts "There are no students"
+  else
   counter = 0
-  while counter < students.count  
-    puts "#{counter+1} #{students[counter][:name]} (#{students[counter][:cohort]} cohort)".center(50)
-    counter += 1
+    while counter < students.count  
+      puts "#{counter+1} #{students[counter][:name]} (#{students[counter][:cohort]} cohort)".center(50)
+      counter += 1
+    end
   end
 end
 
