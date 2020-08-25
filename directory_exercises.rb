@@ -5,15 +5,15 @@ def input_students
   # create an empty array
   students = []
   # get the first name
-  name = gets.chomp
+  name = gets.strip
   #Exercise 8.7
   puts "Enter cohort"
-  cohort = gets.chomp.to_sym
+  cohort = gets.strip.to_sym
   #Exercise 8.5
   puts "Enter hobbies"
-  hobbies = gets.chomp
+  hobbies = gets.strip
   puts "Enter country of birth"
-  country = gets.chomp
+  country = gets.strip
   #while the name is not empty, repeat this code
   while !name.empty? && !cohort.empty? do
     #add the student hash to the array
@@ -25,13 +25,13 @@ def input_students
       puts "Now we have #{students.count} students"
       end
     # get another name from the user
-    name = gets.chomp
+    name = gets.strip
       puts "Enter cohort"
-    cohort = gets.chomp.to_sym
+    cohort = gets.strip.to_sym
       puts "Enter hobbies"
-    hobbies = gets.chomp
+    hobbies = gets.strip
       puts "Enter country of birth"
-    country = gets.chomp
+    country = gets.strip
   end
   #return the array of students
   students
@@ -55,7 +55,7 @@ end
 #Exercise 8.2
 def print_specific_letter(students)
   puts "User enters a letter to filter"
-  letter = gets.chomp
+  letter = gets.strip
   students.select do |student|
     puts student[:name] if student[:name].start_with?(letter)
   end
@@ -76,7 +76,7 @@ end
 def print_cohort_group(students)
   puts "Enter cohort"
   students_group = []
-  cohort_group = gets.chomp.to_sym
+  cohort_group = gets.strip.to_sym
   students.map do |student|
     if student[:cohort] == cohort_group
       students_group << student
