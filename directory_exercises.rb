@@ -1,9 +1,8 @@
+@students = [] #an empty array accessible to all methods
 
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
-  # create an empty array
-  students = []
   # get the first name
   name = gets.strip
   #Exercise 8.7
@@ -17,12 +16,12 @@ def input_students
   #while the name is not empty, repeat this code
   while !name.empty? && !cohort.empty? do
     #add the student hash to the array
-    students << {name: name, cohort: cohort, hobbies: hobbies, country: country}
+    @students << {name: name, cohort: cohort, hobbies: hobbies, country: country}
       #Exercise 8.9
-      if students.count == 1
-    puts "Now we have #{students.count} student"
+      if @students.count == 1
+    puts "Now we have #{@students.count} student"
       else
-      puts "Now we have #{students.count} students"
+      puts "Now we have #{@students.count} students"
       end
     # get another name from the user
     name = gets.strip
@@ -34,7 +33,7 @@ def input_students
     country = gets.strip
   end
   #return the array of students
-  students
+  @students
 end
 
 #Exercise 8.6  
@@ -44,36 +43,36 @@ def print_header
 end
 
 #Exercise 8.1, 8.4
-def print(students)
-  if students.empty?
+def print_students_list
+  if @students.empty?
     puts "There are no students"
   else
   counter = 0
-    while counter < students.count  
-      puts "#{counter+1} #{students[counter][:name]} (#{students[counter][:cohort]} cohort)".center(50)
+    while counter < @students.count  
+      puts "#{counter+1} #{@students[counter][:name]} (#{@students[counter][:cohort]} cohort)".center(50)
       counter += 1
     end
   end
 end
 
 #Exercise 8.2
-def print_specific_letter(students)
+def print_specific_letter
   puts "User enters a letter to filter"
   letter = gets.strip
-  students.select do |student|
+  @students.select do |student|
     puts student[:name] if student[:name].start_with?(letter)
   end
 end
 
 #Exercise 8.3
-def print_less(students)
-   students.select do |student|
+def print_less
+   @students.select do |student|
     puts student[:name] if student[:name].length < 12
   end
 end
 
-def print_footer(students)
-  puts "Overall, we have #{students.count} great students".center(50)
+def print_footer
+  puts "Overall, we have #{@students.count} great students".center(50)
 end
 
 #Exercise 8.8
@@ -81,7 +80,7 @@ def print_cohort_group(students)
   puts "Enter cohort"
   students_group = []
   cohort_group = gets.strip.to_sym
-  students.map do |student|
+  @students.map do |student|
     if student[:cohort] == cohort_group
       students_group << student
     end
@@ -90,9 +89,35 @@ puts students_group
 end
 
 
-#nothing happens until we call the methods
-students = input_students
-print_header
-print(students)
-print_cohort_group(students)
-print_footer(students)
+def print_menu
+    puts "1. Input the students"
+    puts "2. Show the students"
+    puts "9. Exit"
+end
+
+def show_students
+  print_header
+  print_students_list
+  print_footer
+end
+
+def process(selection)
+  case selection
+    when "1"
+      input_students
+    when "2"
+      show_students
+    when "9"
+      exit
+  end
+end
+
+def interactive_menu
+ loop do
+   print_menu
+   process(gets.chomp)
+  end
+end
+
+interactive_menu
+
