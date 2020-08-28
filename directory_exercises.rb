@@ -1,22 +1,40 @@
+require 'csv'
 @students = [] #an empty array accessible to all methods
+
+
+def interactive_menu
+ loop do
+   print_menu
+   process(STDIN.gets.chomp)
+  end
+end
+
+
+def show_students
+  print_header
+  print_students_list
+  print_footer
+end
+
 
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
   # get the first name
-  name = gets.strip
+  name = STDIN.gets.strip
   #Exercise 8.7
   puts "Enter cohort"
-  cohort = gets.strip.to_sym
+  cohort = STDIN.gets.strip.to_sym
   #Exercise 8.5
   puts "Enter hobbies"
-  hobbies = gets.strip
+  hobbies = STDIN.gets.strip
   puts "Enter country of birth"
-  country = gets.strip
+  country = STDIN.gets.strip
   #while the name is not empty, repeat this code
   while !name.empty? && !cohort.empty? do
     #add the student hash to the array
-    @students << {name: name, cohort: cohort, hobbies: hobbies, country: country}
+    #@students << {name: name, cohort: cohort, hobbies: hobbies, country: country}
+    populate_student({name: name, cohort: cohort.to_sym, hobbies: hobbies, country: country})
       #Exercise 8.9
       if @students.count == 1
     puts "Now we have #{@students.count} student"
@@ -24,13 +42,13 @@ def input_students
       puts "Now we have #{@students.count} students"
       end
     # get another name from the user
-    name = gets.strip
+    name = STDIN.gets.strip
       puts "Enter cohort"
-    cohort = gets.strip.to_sym
+    cohort = STDIN.gets.strip.to_sym unless name.empty?
       puts "Enter hobbies"
-    hobbies = gets.strip
-      puts "Enter country of birth"
-    country = gets.strip
+    hobbies = STDIN.gets.strip unless name.empty?
+      puts "Enter country of birth" 
+    country = STDIN.gets.strip unless name.empty?
   end
   #return the array of students
   @students
@@ -49,7 +67,8 @@ def print_students_list
   else
   counter = 0
     while counter < @students.count  
-      puts "#{counter+1} #{@students[counter][:name]} (#{@students[counter][:cohort]} cohort)".center(50)
+      puts "#{counter+1} #{@students[counter][:name]} (#{@students[counter][:cohort]} cohort) 
+      likes to play #{@students[counter][:hobbies]} and is from #{@students[counter][:country]} ".center(50)
       counter += 1
     end
   end
@@ -97,11 +116,7 @@ def print_menu
     puts "9. Exit"
 end
 
-def show_students
-  print_header
-  print_students_list
-  print_footer
-end
+
 
 def process(selection)
   case selection
@@ -118,34 +133,62 @@ def process(selection)
   end
 end
 
-def interactive_menu
- loop do
-   print_menu
-   process(gets.chomp)
-  end
-end
+
 
 def save_students
+  puts "What file would you like to save?"
+  filename = gets.chomp
   #open the file for writing
-  file = File.open("students.csv", "w")
+  CSV.open("#{filename}.csv", "wb") do |csv|
   #iterate over the array of students
   @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+    csv << [student[:name], student[:cohort], student[:hobbies], student[:country]]
   end
-  file.close
+  puts "File successfully saved"
+end
 end
 
 
-def load_students
-  file = File.open("students.csv", "r")
-  file.readlines.each do |line|
-    name, cohort = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym}
+def load_students(filename = "students.csv")
+  puts "Which file would you like to load?"
+  filename = gets.chomp
+  filename = "students" if filename.to_s.empty?
+  CSV.open("#{filename}.csv", "r")
+  CSV.foreach("#{filename}.csv")  do |line|
+    name, cohort, hobbies, country = line
+    populate_student({name: name, cohort: cohort.to_sym, hobbies: hobbies, country: country})
   end
-  file.close
+  puts "File successfully loaded"
 end
 
+
+def try_load_students
+  filename = ARGV.first #first argument from the command line
+  return if filename.nil? #get out of the method i it isn't given
+  if File.exists?(filename) #if it exists
+    load_students(filename)
+      puts "Loaded #{@students.count} from #{filename}"
+  else #if it doesn't exist
+    puts "Sorry, #{filename} doesn't exist"
+    exit #quit the program
+  end
+end
+
+
+def populate_student(student_details = {})
+  @students << student_details
+end
+
+
+def print_source_code
+  File.open(__FILE__, "r") do |file|
+    file.readlines.each do |line|
+      puts line
+    end
+  end
+end
+
+try_load_students
 interactive_menu
 
+print_source_code
