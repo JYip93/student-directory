@@ -127,7 +127,8 @@ def process(selection)
     when "3"
       save_students
     when "4"
-      load_students
+      #load_students
+      get_students_file
     when "9"
       exit
   end
@@ -149,12 +150,10 @@ end
 end
 
 
-def load_students(filename = "students.csv")
-  puts "Which file would you like to load?"
-  filename = gets.chomp
-  filename = "students" if filename.to_s.empty?
-  CSV.open("#{filename}.csv", "r")
-  CSV.foreach("#{filename}.csv")  do |line|
+def load_students(filename)
+  CSV.open("#{filename}", "r")
+    @students.clear
+  CSV.foreach("#{filename}")  do |line|
     name, cohort, hobbies, country = line
     populate_student({name: name, cohort: cohort.to_sym, hobbies: hobbies, country: country})
   end
@@ -162,16 +161,24 @@ def load_students(filename = "students.csv")
 end
 
 
-def try_load_students
-  filename = ARGV.first #first argument from the command line
-  return if filename.nil? #get out of the method i it isn't given
-  if File.exists?(filename) #if it exists
-    load_students(filename)
-      puts "Loaded #{@students.count} from #{filename}"
-  else #if it doesn't exist
-    puts "Sorry, #{filename} doesn't exist"
-    exit #quit the program
-  end
+def get_students_file
+  puts "Which file would you like to load?" #Prompt user for student file
+    filename = STDIN.gets.chomp #user input
+    if filename.empty? #check user input is empty or not
+       if ARGV.first.nil? #user input empty and check command line has an argument
+         puts "**No default file**" #if both user input and argument is empty then no default file
+         return #go back to menu
+       else 
+          filename = ARGV.first #if no user input but there is an argument
+       end
+    end  
+    if File.exists?(filename) #once there is a filename check if filename exists
+      load_students(filename) #load the filename
+      puts "Loaded #{@students.count} from #{filename}" #print out nmber of students from filename
+    else 
+       puts "Sorry, #{filename} doesn't exist." #if filename doesnt exist go back to menu
+       return
+    end
 end
 
 
@@ -188,7 +195,7 @@ def print_source_code
   end
 end
 
-try_load_students
+
 interactive_menu
 
 print_source_code
